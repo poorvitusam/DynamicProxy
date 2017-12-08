@@ -1,4 +1,4 @@
-package util;
+package genericCheckpointing.util;
 
 public class MyAllTypesFirst {
 

@@ -1,4 +1,4 @@
-package server;
+package genericCheckpointing.server;
 
 public interface StoreRestoreI {
 
