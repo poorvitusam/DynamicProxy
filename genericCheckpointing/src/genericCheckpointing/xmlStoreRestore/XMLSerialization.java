@@ -13,8 +13,7 @@ public class XMLSerialization implements SerStrategy {
     	 string.append("<DPSerialization><complexType xsi:type='genericCheckpointing.util.");
     	 Class<?> cls = sObject.getClass();
     	 
-    	 string.append(cls.getName());
-    	 string.append("'>\n<");
+    	 string.append(cls.getName() + "'>\n");
     	 
     	 System.out.println("process");
     	 Field[] fieldList =  cls.getDeclaredFields();
