@@ -1,6 +1,8 @@
 
 package genericCheckpointing.driver;
 
+import java.util.Random;
+
 import genericCheckpointing.server.RestoreI;
 import genericCheckpointing.server.StoreI;
 import genericCheckpointing.server.StoreRestoreI;
@@ -17,11 +19,23 @@ public class Driver {
     public static void main(String[] args) {
 	
 	// FIXME: read the value of checkpointFile from the command line
+    String mode = args[0];
+    int N = Integer.parseInt(args[1]);
+    String filename = args[2];
+    
+    int NUM_OF_OBJECTS = 0;
+    if (mode.equals("serdeser")) {
+    	NUM_OF_OBJECTS = N;
+    } else {
+    	
+    }
 	
 	ProxyCreator pc = new ProxyCreator();
 	
 	// create an instance of StoreRestoreHandler (which implements
 	// the InvocationHandler
+	
+	StoreRestoreHandler storeRestoreHandler = new StoreRestoreHandler();
 	
 	// create a proxy
 	StoreRestoreI cpointRef = (StoreRestoreI) pc.createProxy(
@@ -44,15 +58,16 @@ public class Driver {
 	// create a data structure to store the objects being serialized
         // NUM_OF_OBJECTS refers to the count for each of MyAllTypesFirst and MyAllTypesSecond
 	for (int i=0; i<NUM_OF_OBJECTS; i++) {
-
+		Random rand = new Random();
+		int param1 = getRandomInt(rand);
 	    // FIXME: create these object instances correctly using an explicit value constructor
 	    // use the index variable of this loop to change the values of the arguments to these constructors
-	    myFirst = new MyAllTypesFirst(...);
-	    mySecond = new MyAllTypesSecond(..);
+	    myFirst = new MyAllTypesFirst(param1);
+	    mySecond = new MyAllTypesSecond(param1);
 
 	    // FIXME: store myFirst and mySecond in the data structure
-	    ((StoreI) cpointRef).writeObj(myFirst, "XML");
-	    ((StoreI) cpointRef).writeObj(mySecond, "XML");
+	    ((StoreI) cpointRef).writeObj(myFirst, 0,"XML");
+	    ((StoreI) cpointRef).writeObj(mySecond, 0,"XML");
 
 	}
 
@@ -71,5 +86,9 @@ public class Driver {
 	// The comparison should use the equals and hashCode methods. Note that hashCode 
 	// is used for key-value based data structures
     
+    }
+    
+    public static int getRandomInt(Random rand) {
+    	return rand.nextInt(100);
     }
 }
