@@ -1,6 +1,5 @@
 package genericCheckpointing.util;
 
-
 import genericCheckpointing.util.MyLogger.DebugLevel;
 
 public class MyLogger{

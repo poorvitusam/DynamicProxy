@@ -1,62 +1,71 @@
 package genericCheckpointing.store;
 
-package genericCheckpointing.store;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import genericCheckpointing.util.FileDisplayInterface;
 import genericCheckpointing.util.FileProcessor;
-import genericCheckpointing.util.FileProcessor.Permission;
 import genericCheckpointing.util.MyLogger;
 import genericCheckpointing.util.MyLogger.DebugLevel;
 import genericCheckpointing.util.StdoutDisplayInterface;
 
-/**
- * Class to store all results in string format and process those results to write in
- * a file or print on console
- * @author suresh
- *
- */
+import java.util.ArrayList;
+
 public class Results implements FileDisplayInterface, StdoutDisplayInterface {
-
-	List<String> testResults = new ArrayList<String>();;
-	String outputFilePath;
-
-	public Results(String outputFilePath) {
-		MyLogger.writeMessage("Results Parameterized Constructor is called", DebugLevel.CONSTRUCTOR);
-		this.outputFilePath = outputFilePath;
-	}
-
-
+	private ArrayList<String> results;
+	private FileProcessor fp;
+	
 	/**
-	 * Store new result
-	 * @param resultString
+	 * Assign file processor object
+	 * @param fileProcessor
 	 */
-	public void storeNewResult(String resultString) {
-		MyLogger.writeMessage(resultString, DebugLevel.DEBUG);
-		testResults.add(resultString);
+	public Results(FileProcessor fileProcessor) {
+		MyLogger.writeMessage("Contructor of Results", MyLogger.DebugLevel.CONSTRUCTOR);
+		fp = fileProcessor;
+		results = new ArrayList<String>();
 	}
-
 	
-	
-	@Override
-	public void writeToFile() {
-		FileProcessor fileProcessor = new FileProcessor(outputFilePath, Permission.WRITE, true);
-		fileProcessor.writeLines(testResults);
-		fileProcessor.closeFile();
-		
-		MyLogger.writeMessage("Result is generated at path = " + fileProcessor.getFilePath(), DebugLevel.VERBOSE);
+	/**
+	 * Call function to write in file 
+	 */
+	public void writeToFile(String s) {
+		fp.writeLine(s);
 	}
-
-
+	
+	public void writeToStdout(String s) {
+		System.out.println(s);
+	}
+	
+	/**
+	 * Store entry in result object
+	 * @param name of test
+	 * @param result if passed or failed
+	 * @param message if error then message
+	 */
+	public void writeResultToFile() {
+		for(String entry:results) {
+			writeToFile(entry);
+		}
+	}
+	
+	/**
+	 * Form the the string with the node to store
+	 * @param node B number and courses are extracted from here
+	 */
+	public void storeResult(String result) {
+		results.add(result + "\n");
+	}
 
 	@Override
 	public void writeToStdout() {
-		for (String line : testResults) {
-			System.out.println(line);
-		}
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void writeToFile() {
+		// TODO Auto-generated method stub
+		
 	}
 }
-
 

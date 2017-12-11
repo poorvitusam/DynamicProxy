@@ -1,199 +1,115 @@
 package genericCheckpointing.util;
 
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+//import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
+//import java.util.List;
 
-import genericCheckPointing.util.MyLogger.DebugLevel;
+import genericCheckpointing.util.MyLogger.DebugLevel;
 
 public class FileProcessor {
-
+	public BufferedReader bufferedReader;
+	public BufferedWriter bufferedWriter;
+	
+	public FileProcessor() {}
+	
 	/**
-	 * Enum that will define the use of FileProcess whether it's a File READ operation or WRITE operation.
-	 *
+	 * Object creation for read write from file operation
+	 * @param inputFile
+	 * @param outputFile
 	 */
-	public enum Permission {
-		READ, WRITE
-	}
-
-	String filePath;
-	BufferedReader reader;
-	BufferedWriter writer;
-	Permission permission;
-	boolean permitEmptyFile = false;
-
-	public FileProcessor() {
-		MyLogger.writeMessage("FileProcessor Constructor is called", DebugLevel.CONSTRUCTOR);
-		openFile();
-	}
-
-	/**
-	 * Parameterized constructor for binding a File Processor instance with file and access permission
-	 * i.e Either WRITE or READ
-	 * @param filePath
-	 * @param permission
-	 * @param permitEmptyFile
-	 */
-	public FileProcessor(String filePath, Permission permission, boolean permitEmptyFile) {
-		//MyLogger.writeMessage("FileProcessor Parameterized Constructor is called", DebugLevel.CONSTRUCTOR);
-		this.filePath = filePath;
-		this.permission = permission;
-		this.permitEmptyFile = permitEmptyFile;
-		openFile();
-	} 
-
-
-
-	/**
-	 * Open file if not already opened
-	 * @return
-	 */
-	private boolean openFile() {
-
-		if(filePath == null || filePath.length() == 0) {
-			return false;
-		}
-
-
-		File file = new File(filePath);
-		boolean openSuccess = true;
+	public FileProcessor(String file, String mode, String name) {
+		MyLogger.writeMessage("Contructor of FileProcessor", MyLogger.DebugLevel.CONSTRUCTOR);
 		try {
-			switch (permission) {
-			case READ:
-
-				/*Exit application if file is empty and empty file is not permitted*/
-				if(file.length() == 0 && !permitEmptyFile) {
-					System.err.println("\"" + file.getName() + "\"" + " - File is Empty!");
-					System.exit(0);
-					return false;
+			if (mode.equals("write")) {
+				File opFile = new File(file);
+				if(opFile.exists()) {
+					opFile.delete();
 				}
-
-				FileReader fileReader = new FileReader(file);
-				reader = new BufferedReader(fileReader);
-				break;
-			case WRITE:
-				FileWriter fileWriter = new FileWriter(file);
-				writer = new BufferedWriter(fileWriter);
-				break;
-			default:
-				System.err.println("FileProcessor:openFile - Please provide appropriate File Permission");
-				System.exit(0);
-				break;
+				FileWriter fileWriter = new FileWriter(file, true);
+				bufferedWriter = new BufferedWriter(fileWriter);
+				
 			}
+			FileReader fileReader = new FileReader(file);
+			bufferedReader = new BufferedReader(fileReader);
 
-		} catch (FileNotFoundException e) {
-			openSuccess = false;
-			System.err.println("FileProcessor:openFile - File Not Found Exception Occured :: "  + e.getLocalizedMessage());
-		} catch(IOException e) {
-			openSuccess = false;
-			System.err.println("FileProcessor:openFile - IO Exception Occured :: "  + e.getLocalizedMessage());
-		} finally {
-			if (!openSuccess) {
-				closeFile();
-				System.exit(0);
-			}
+//			File ipFile = new File(file);
+//			if(!ipFile.exists() && ipFile.length() > 0) {
+//				System.err.println("Input file invalid");
+//				System.exit(0);
+//			}
+			
+			
+		} catch (Exception e) {
+			System.out.println("Exception caught");
+			e.printStackTrace();
 		}
+	}
+	
+	
+	
+	public BufferedReader getBufferedReader() {
+		return bufferedReader;
+	}
 
-		return true;
+	public void setBufferedReader(BufferedReader bufferedReader) {
+		this.bufferedReader = bufferedReader;
+	}
+
+	public BufferedWriter getBufferedWriter() {
+		return bufferedWriter;
+	}
+
+	public void setBufferedWriter(BufferedWriter bufferedWriter) {
+		this.bufferedWriter = bufferedWriter;
 	}
 
 	/**
-	 * Writes list of strings into file
-	 * @param lines to write into file
+	 * Close files which were opened
+	 * @param mode if read or write
 	 */
-	public void writeLines(List<String> lines) {
+	public void closeFile(String mode) {
 		try {
-			for(String line : lines ) {
-				writer.append(line+"\n");
+			if(mode.equals("write")) {
+				bufferedWriter.close();
 			}
+			bufferedReader.close();
 		} catch (IOException e) {
-			System.err.println("FileProcessor:writeLine - IOException Occured :: "  + e.getLocalizedMessage());
-			closeFile();
-			System.exit(0);
-		} finally {
+			System.out.println("Exception caught");
+			e.printStackTrace();
 		}
 	}
-
+	
 	/**
-	 * Reads the file line by line
-	 * @return next line in the file
+	 * Read each line from file
+	 * @return String after reading
 	 */
 	public String readLine() {
-
-		if(this.reader == null) {
-			System.out.println("File is not open");
-			return null;
-		}
-
-		String line = null;
-
 		try {
-			line = this.reader.readLine();
-		} catch (IOException e) {
-			System.err.println("FileProcessor:readLine - IO Exception Occured :: "  + e.getLocalizedMessage());
-			closeFile();
-			System.exit(0);
-		} finally {
+			String nextLine = bufferedReader.readLine();
+			return nextLine;
+		} catch (Exception e) {
+			System.out.println("Exception caught");
+			e.printStackTrace();
 		}
-
-		return line;
+		return null;
 	}
-
+	
 	/**
-	 * Close file if already opened
+	 * Write line by line in file
+	 * @param s
 	 */
-	public void closeFile() {
+	public void writeLine(String s) {
 		try {
-			switch (permission) {
-			case READ:
-				if (reader != null) {
-					reader.close();
-					reader = null;
-				}	
-				break;
-			case WRITE:
-				if (writer != null) {
-					writer.flush();
-					writer.close();
-					writer = null;
-				}
-			default:
-				break;
-			}
-
-		} catch (IOException e) {
-			System.err.println("FileProcessor:closeFile - IO Exception Occured :: "  + e.getLocalizedMessage());
-			System.exit(0);
+			bufferedWriter.write(s);
+			bufferedWriter.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		
 	}
-
-
-	/**
-	 * Setter method for file path
-	 * @param filePath
-	 */
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
-	}
-
-	public String getFilePath() {
-		return filePath;
-	}
-
-	/**
-	 * Setter method for setting permission
-	 * @param permission
-	 */
-	public void setPermission(Permission permission) {
-		this.permission = permission;
-	}
-
-
 }
-
