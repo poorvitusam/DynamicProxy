@@ -88,12 +88,16 @@ public class XMLDeserialization implements DeserStrategy {
 						Method setterMethod = cls.getDeclaredMethod(methodName, String.class);
 						setterMethod.invoke(obj, value);
 					} else if(fieldName.equals(CHAR)) {
-						char value = nextLine.substring(startIndex2, endIndex2).charAt(0);
-						Method setterMethod = cls.getDeclaredMethod(methodName, Character.TYPE);
-						setterMethod.invoke(obj, value);
+						if (endIndex2 >= 0 && ((endIndex2 - 1) != startIndex2)) {
+							char value = nextLine.substring(startIndex2, endIndex2).charAt(0);
+							Method setterMethod = cls.getDeclaredMethod(methodName, Character.TYPE);
+							setterMethod.invoke(obj, value);
+						}
+						
 					}
 					
 				} catch(Exception e) {
+					System.out.println("Exception caught");
 					e.printStackTrace();
 				}
 			}

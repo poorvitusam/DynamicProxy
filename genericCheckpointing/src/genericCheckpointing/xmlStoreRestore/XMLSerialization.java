@@ -51,12 +51,12 @@ public class XMLSerialization implements SerStrategy {
             		 string.append(invokeRet);
             		 string.append("</" + fieldName + ">\n");
         		 } else if(!(fieldClass == int.class) && !(fieldClass == double.class) && !(fieldClass == long.class)) {
-        			 string.append("\t\t<" + fieldName + " xsi:type=\"xsd:" + fieldClass.getSimpleName() + "\">");
-            		 string.append(invokeRet);
-            		 string.append("</" + fieldName + ">\n");
+        			 string.append("\t\t<" + fieldName + " xsi:type=\"xsd:" + fieldClass.getSimpleName() + "\">" 
+        		 + invokeRet + "</" + fieldName + ">\n");
         		 }
         		 
     		 } catch(Exception e) {
+    			 System.out.println("Exception caught");
     			 e.printStackTrace();
     		 }
              

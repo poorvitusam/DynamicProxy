@@ -31,6 +31,7 @@ public class StoreRestoreHandler implements InvocationHandler {
 				}
 			}
 		} catch (Exception e) {
+			System.out.println("Exception caught");
 			e.printStackTrace();
 		}
 		return null;
