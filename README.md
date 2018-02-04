@@ -9,25 +9,8 @@ object that implements the 2 interfaces (StoreI and RestoreI).
 Each invocation will transfer control to the invoke method of the invocation handler.
 
 The code allows the conversion of objects into a wire format. 
-Designed two Java classes MyAllTypesFirst and MyAllTypesSecond with data members that have names and types as shown in the serialized format below:
-  <DPSerialization>
-    <complexType xsi:type="genericCheckpointing.util.MyAllTypesFirst">
-      <myInt xsi:type="xsd:int">314</myInt>
-      <myLong xsi:type="xsd:long">314159</myLong>
-      <myString xsi:type="xsd:string">Design Patterns</myString>
-      <myBool xsi:type="xsd:boolean">false</myBool>
-      <myOtherInt xsi:type="xsd:int">314</myOtherInt>
-    </complexType>
-  </DPSerialization>
-  <DPSerialization>
-    <complexType xsi:type="genericCheckpointing.util.MyAllTypesSecond">
-      <myDoubleT xsi:type="xsd:double">3.1459</myDoubleT>
-      <myFloatT xsi:type="xsd:float">3145.9</myFloatT>
-      <myShortT xsi:type="xsd:short">314</myShortT>
-      <myCharT xsi:type="xsd:char">P</myCharT>
-    </complexType>
-  </DPSerialization>
-  
+Designed two Java classes MyAllTypesFirst and MyAllTypesSecond with data members that have names and in the serialized format 
+
 -----------------------------------------------------------------------
 
 Assuming you are in the directory containing this README:
